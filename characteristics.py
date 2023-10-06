@@ -1,6 +1,7 @@
-import math
-
 import pandas as pd
+import numpy as np
+import math
+import matplotlib.pyplot as plt
 
 def shape (df):
     print(df.shape)
@@ -10,8 +11,10 @@ def get_num_cols(df):
     data = {}
     df_num = pd.DataFrame(data)
     for col in df.columns:
-        if df[col].dtype == int or df[col].dtype == float:
+        if type(df[col].to_dict()[0]) == int or type(df[col].to_dict()[0]) == float:
             df_num[df[col].name] = df[col].values
+        else:
+            print("Столбец ", df[col].name, " содержит нечисловые значения")
     return df_num
 
 def mean_vals(df, rows):
@@ -22,20 +25,51 @@ def mean_vals(df, rows):
         means.append(df[col].sum() / rows)
     return means
 
-def standard_dev(df, means, n):
+def st_deviation(df, means, n):
+    cnt = 0
+    print("Стандартные отклонения: ")
     for col in df.columns:
-        
-
-
-
-
+        tmp = sum((x - means[cnt]) ** 2 for x in df[col].values) / n
+        st_dev = np.sqrt(tmp)
+        print(df[col].name, ": ", st_dev)
+        cnt += 1
 
 
 def min_max(df):
     print("Минимальные и максимальные значения столбцов")
-    for i in df.columns:
-        if df[i].dtype == int or df[i].dtype == float:
-            print(df[i].name, ": Минимум: ", df[i].min(), " Максимум: ", df[i].max())
-        else:
-            print("В колонке ", df[i].name, " содержатся нечисловые значения")
+    for col in df.columns:
+        if type(df[col].to_dict()[0]) == int or type(df[col].to_dict()[0]) == float:
+            print(df[col].name, ": Минимум: ", df[col].min(), " Максимум: ", df[col].max())
 
+def quantiles(df, n):
+    print("Квантили: ")
+    for col in  df.columns:
+        val_list = df[col].values
+        val_list = sorted(val_list)
+        q_25 = val_list[math.floor((n + 1) * 0.25)]
+        q_50 = val_list[math.floor((n + 1) * 0.5)]
+        q_75 = val_list[math.floor((n + 1) * 0.75)]
+        print(df[col].name, " Q(0.25) = ", q_25, "; Q(0.5) = ", q_50, "; Q(0.75) = ", q_75)
+
+def visualization (df):
+    plt.figure(figsize = (20, 20))
+    for i, col in enumerate(df.columns):
+        plt.subplot(2, 3, i + 1)
+        df[col].plot(kind = 'box')
+        plt.title(df[col].name)
+    plt.tight_layout()
+    plt.show()
+
+def get_characteristics(df):
+    df_shape = shape(df)
+    print("Характеристики числовых столбцов: ")
+    df_nums = get_num_cols(df)
+    print()
+    means = mean_vals(df_nums, df_shape[0])
+    print()
+    st_deviation(df_nums, means, df_shape[0])
+    print()
+    min_max(df_nums)
+    print()
+    quantiles(df_nums, df_shape[0])
+    visualization(df_nums)
