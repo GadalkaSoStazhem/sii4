@@ -19,30 +19,34 @@ def get_num_cols(df):
 
 def mean_vals(df, rows):
     means = []
-    print("Средние значения по колонкам: ")
     for col in df.columns:
-        print(df[col].name, ": ", df[col].sum() / rows)
         means.append(df[col].sum() / rows)
     return means
 
 def st_deviation(df, means, n):
     cnt = 0
-    print("Стандартные отклонения: ")
+    devs = []
     for col in df.columns:
         tmp = sum((x - means[cnt]) ** 2 for x in df[col].values) / n
         st_dev = np.sqrt(tmp)
-        print(df[col].name, ": ", st_dev)
+        devs.append(st_dev)
+        cnt += 1
+    return devs
+
+def printer (df, arr):
+    cnt = 0
+    for col in df.columns:
+        print(df[col].name, ": ", arr[cnt])
         cnt += 1
 
-
 def min_max(df):
-    print("Минимальные и максимальные значения столбцов")
+    print("\nМинимальные и максимальные значения столбцов")
     for col in df.columns:
         if type(df[col].to_dict()[0]) == int or type(df[col].to_dict()[0]) == float:
             print(df[col].name, ": Минимум: ", df[col].min(), " Максимум: ", df[col].max())
 
 def quantiles(df, n):
-    print("Квантили: ")
+    print("\nКвантили: ")
     for col in  df.columns:
         val_list = df[col].values
         val_list = sorted(val_list)
@@ -64,12 +68,12 @@ def get_characteristics(df):
     df_shape = shape(df)
     print("Характеристики числовых столбцов: ")
     df_nums = get_num_cols(df)
-    print()
+    print("\nСредние значения по колонкам: ")
     means = mean_vals(df_nums, df_shape[0])
-    print()
-    st_deviation(df_nums, means, df_shape[0])
-    print()
+    printer(df_nums, means)
+    print("\nСтандартные отклонения: ")
+    devs = st_deviation(df_nums, means, df_shape[0])
+    printer(df_nums, devs)
     min_max(df_nums)
-    print()
     quantiles(df_nums, df_shape[0])
-    visualization(df_nums)
+    #visualization(df_nums)
