@@ -9,9 +9,9 @@ def nan_check(df):
         print("Количество пропущенных значений: ")
         for col in df.columns:
             if type(df[col].to_dict()[0]) == int or type(df[col].to_dict()[0]) == float:
-                df[col].fillna(df[col].mean())
+                df[col].fillna(df[col].mean(), inplace = True)
             else:
-                df[col].fillna(df[col].mode().iloc[0])
+                df[col].fillna(df[col].mode().iloc[0], inplace = True)
     else:
         print("Пропущенных значений нет")
 
@@ -42,8 +42,8 @@ def define_distrib(df):
 
 def splitter (df, test_size, random_state):
     shape = df.shape #колонки отдельно!!!
-    X = df.drop('Extracurricular Activities', axis = 1)
-    y = df['Extracurricular Activities']
+    X = df.drop('Performance Index', axis = 1)
+    y = df['Performance Index']
     ids = numpy.array(range(shape[0]))
     random.seed(random_state)
     random.shuffle(ids)
@@ -55,8 +55,8 @@ def splitter (df, test_size, random_state):
 
     X_train = pd.DataFrame(X.values[tr_ids, :], columns=X.columns)
     X_test = pd.DataFrame(X.values[test_ids, :], columns=X.columns)
-    y_train = pd.DataFrame(y.values[tr_ids], columns=['Extracurricular Activities'])
-    y_test = pd.DataFrame(y.values[test_ids], columns=['Extracurricular Activities'])
+    y_train = pd.DataFrame(y.values[tr_ids], columns=['Performance Index'])
+    y_test = pd.DataFrame(y.values[test_ids], columns=['Performance Index'])
     return X_train, X_test, y_train, y_test
 
 
