@@ -34,7 +34,7 @@ def cat_features (df):
 def define_distrib(df):
     plt.figure(figsize=(20, 10))
     for i, col in enumerate(df.columns):
-        plt.subplot(2, 3, i + 1)
+        plt.subplot(2, 4, i + 1)
         df[col].plot(kind='hist')
         plt.title(df[col].name)
     plt.tight_layout()
@@ -65,18 +65,31 @@ def std_scaler(df):
     shape = df.shape
     means = mean_vals(df, shape[0])
     devs = st_deviation(df, means, shape[0])
+    #используется для нормального распределения
     for col in df.columns:
-        df[col] = (df[col] - means[cnt]) / devs[cnt]
+        if df[col].name == 'Performance Index':
+            df[col] = (df[col] - means[cnt]) / devs[cnt]
         cnt += 1
+
+def min_max_scaler(df):
+    #используется для равномерного распределения
+    for col in df.columns:
+        if df[col].name != 'Performance Index':
+            min_val = df[col].min()
+            max_val = df[col].max()
+            df[col] = (df[col] - min_val) / (max_val - min_val)
+
 
 
 def prep_data(df):
     nan_check(df)
     cat_features(df)
     df_good = cat_features(df)
-    #define_distrib(df_good)
+    define_distrib(df_good)
     X_train, X_test, y_train, y_test = splitter(df_good, 0.3, 42)
-    std_scaler(X_train)
-    std_scaler(X_test)
+    std_scaler(y_train)
+    min_max_scaler(X_train)
+    std_scaler(y_test)
+    min_max_scaler(X_test)
     return X_train, X_test, y_train, y_test
 

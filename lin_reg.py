@@ -40,5 +40,5 @@ def make_lin_reg(X_train, X_test, y_train, y_test):
     B = get_coeffs(X_train, y_train, X_train.shape[0], X_train.shape[1])
     y_pred = lin_reg_predict(X_test, B)
     r_2 = r2_metric(y_test.values, y_pred.values)
-    print("Точность модели: ", r_2)
+    print("R^2: ", r_2)
 

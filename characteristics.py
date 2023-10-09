@@ -40,6 +40,8 @@ def printer (df, arr):
         cnt += 1
 
 def min_max(df):
+    mins = []
+    maxs = []
     print("\nМинимальные и максимальные значения столбцов")
     for col in df.columns:
         if type(df[col].to_dict()[0]) == int or type(df[col].to_dict()[0]) == float:
@@ -76,4 +78,4 @@ def get_characteristics(df):
     printer(df_nums, devs)
     min_max(df_nums)
     quantiles(df_nums, df_shape[0])
-    #visualization(df_nums)
+    visualization(df_nums)
